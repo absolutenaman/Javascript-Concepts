@@ -1,5 +1,7 @@
 const promise1 = new Promise((resolve, reject) => {
   setTimeout(() => reject("❌ Promise 1 failed"), 1000);
+}).catch((err)=>{
+    console.log(err);
 });
 
 const promise2 = new Promise((resolve, reject) => {
