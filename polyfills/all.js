@@ -8,14 +8,18 @@ const promise3 = new Promise((resolve, reject) => {
 
 Promise.myAll = function (promiseArr) {
   let arr = [];
+  let length=0
   return new Promise((resolve, reject) => {
-    promiseArr.forEach((promise) => {
+    if (promiseArr.length === 0) return resolve([]);
+    promiseArr.forEach((promise,index) => {
       Promise.resolve(promise)
         .then((item) => {
-          arr.push(item);
-          if (arr.length === promiseArr.length) resolve(arr);
+          arr[index]=item;
+          length++;
+          if (length === promiseArr.length) resolve(arr);
         })
         .catch((err) => {
+            arr[index]=err;
           return reject(err);
         });
     });
