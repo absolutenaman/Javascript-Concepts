@@ -12,10 +12,7 @@ result()
 result()
 result()
 
-//output -> 
-// parent scope 10
-// 11
-// 12
-// 13
-// 14
-// To be confirmed on web browser also
+/*According to W3Schools, a closure in JavaScript is a function that 
+retains access to its parent scope even after 
+the parent function has finished executing.
+*/
