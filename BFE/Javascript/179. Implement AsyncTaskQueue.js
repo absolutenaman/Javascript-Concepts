@@ -24,38 +24,39 @@ queue.queue(task2); // Starts immediately (concurrency = 2)
 queue.queue(task3); // Waits until one of the first two tasks comp
  */
 class AsyncTaskQueue {
-    constructor(capacity) {
-        this.limit = capacity
+    constructor(concurrency) {
+        this.limit = concurrency
+        this.counter = 0
         this.arr = []
-        this.counter = 0;
-    };
+    }
 
     queue(task) {
-        if (this.counter < this.limit) {
+        if(this.counter<this.limit){
             this.counter++;
             Promise.resolve(task()).then((res) => {
                 console.log(res)
             }).catch(() => {
             }).finally(() => {
                 this.counter--;
-                if (this.arr.length !== 0) {
-                    this.queue(this.arr.shift());
+                if(this.arr.length!==0){
+                    this.queue(this.arr.shift())
                 }
             })
         } else {
-            this.arr.push(task);
+            this.arr.push(task)
         }
+
     }
 }
 
-async function main() {
+function main(){
     const task1 = () => new Promise((resolve) => setTimeout(() => resolve("Task 1 done"), 1000));
-    const task2 = () => new Promise((resolve, reject) => setTimeout(() => reject("Task 2 failed"), 500));
-    const task3 = () => new Promise((resolve) => setTimeout(() => resolve("Task 3 done"), 200));
-    const queue = new AsyncTaskQueue(2);
+    const task2 = () => new Promise((resolve, reject) => setTimeout(() => reject("Task 2 failed"), 10000));
+    const task3 = () => new Promise((resolve) => setTimeout(() => resolve("Task 3 done"), 2000));
+    const queue = new AsyncTaskQueue(2); // Allow up to 2 tasks to run concurrently
+
     queue.queue(task1); // Starts immediately
     queue.queue(task2); // Starts immediately (concurrency = 2)
-    queue.queue(task3);
+    queue.queue(task3); // Waits until one of the first two tasks comp
 }
-
-main();
+main()
