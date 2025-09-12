@@ -1,37 +1,52 @@
-function promiseAllWithConcurrencyLimitf(functions, limit) {
+function promiseAllWithConcurrencyLimit(arr, limit) {
     let curr = 0;
-    let index = 0;
     let result = [];
+    let index = 0;
+    let completed=0;
     return new Promise((resolve, reject) => {
-        function AsyncFunc() {
-            if (index >= functions.length && curr === 0) {
-                return resolve(result)
+        function next() {
+            if (completed === arr.length) {
+                resolve(result)
+                return;
             }
-            while (curr < limit && index < functions.length) {
-                const i = index++;
+            while (curr < limit && index < arr.length) {
                 curr++;
-                functions[i]().then((res) => {
-                    result[i] = res;
+                let currIndex=index;
+                index++;
+                arr[currIndex]().then((res) => {
+                    result[currIndex] = res;
+                    completed++;
                     curr--;
-
-                    AsyncFunc();
+                    next();
                 }).catch((err) => {
-                    reject(err)
+                    reject(err);
                 })
             }
         }
-
-        AsyncFunc()
+        next()
     })
-
 }
 
-//For the purpose of user debugging.
-//pass appropriate input in below function call
-let prom = promiseAllWithConcurrencyLimitf([() => new Promise(resolve => setTimeout(() => resolve(1), 5000)),
-    () => new Promise((resolve, reject) => setTimeout(() => resolve(2), 5000))], 1)
-prom.then((res) => {
-    console.log(res)
-}).catch((err) => {
-    console.log(err)
-});
+
+const promises = [
+    () =>
+        new Promise((resolve) =>
+            setTimeout(() => resolve("Promise 1 resolved after 1 second"), 1000)
+        ),
+    () =>
+        new Promise((resolve) =>
+            setTimeout(() => resolve("Promise 2 resolved after 2 seconds"), 2000)
+        ),
+    () =>
+        new Promise((resolve) =>
+            setTimeout(() => resolve("Promise 3 resolved after 3 seconds"), 3000)
+        ),
+    () =>
+        new Promise((resolve) =>
+            setTimeout(() => resolve("Promise 4 resolved after 4 seconds"), 4000)
+        ),
+];
+
+promiseAllWithConcurrencyLimit(promises, 2)
+    .then((r) => console.log("All results:", r))
+    .catch((err) => console.error("Error:", err));
