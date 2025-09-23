@@ -5,22 +5,23 @@ const BOARD_SIZE = 8;
 
 
 const getKnightMoves = (row, col) => {
+    document.getElementById(`cell-${row}-${col}`).className = "selected-square";
     const moves = [[1, 2], [-1, 2], [1, -2], [-1, -2], [2, 1], [-2, 1], [2, -1], [-2, -1]]
-    for (let i = 0; i < moves.length; i++){
-        if (((row + moves[i][0]) >= 0 && (row + moves[i][0]) < 8) && ((col + moves[i][1]) >= 0 && (col + moves[i][1]) < 8))
-        {
+    for (let i = 0; i < moves.length; i++) {
+        if (((row + moves[i][0]) >= 0 && (row + moves[i][0]) < 8) && ((col + moves[i][1]) >= 0 && (col + moves[i][1]) < 8)) {
             document.getElementById(`cell-${row + moves[i][0]}-${col + moves[i][1]}`).className = 'knight-move-target';
-            // document.getElementById(`cell-${row}-${col}`).style.backgroundColor = 'maroon';
         }
     }
 }
-const outHandler = (setState) => {
-    let dynamicMatrix = [];
-    for (let i = 0; i < BOARD_SIZE; i++) {
-        dynamicMatrix[i] = [];
-        for (let j = 0; j < BOARD_SIZE; j++) {
-            const isLight = (i + j) % 2 === 0;
-            document.getElementById(`cell-${i}-${j}`).className = `cell ${isLight ? "light-square" : "dark-square"}`;
+const outHandler = (row, col) => {
+    const isLights = (row + col) % 2 === 0;
+
+    document.getElementById(`cell-${row}-${col}`).className = `cell ${isLights ? "light-square" : "dark-square"}`;
+    const moves = [[1, 2], [-1, 2], [1, -2], [-1, -2], [2, 1], [-2, 1], [2, -1], [-2, -1]]
+    for (let i = 0; i < moves.length; i++) {
+        if (((row + moves[i][0]) >= 0 && (row + moves[i][0]) < 8) && ((col + moves[i][1]) >= 0 && (col + moves[i][1]) < 8)) {
+            const isLight = (row + moves[i][0] + col + moves[i][1]) % 2 === 0;
+            document.getElementById(`cell-${row + moves[i][0]}-${col + moves[i][1]}`).className = `cell ${isLight ? "light-square" : "dark-square"}`;
         }
     }
 }
@@ -43,13 +44,12 @@ const KnightChessboard = () => {
             {state.map((_, row) =>
                 state[row].map((_, col) => {
                     const isLight = (row + col) % 2 === 0;
-
                     return (
                         <div
                             key={`${row}-${col}`}
                             data-testid={`cell-${row}-${col}`}
                             onMouseOver={() => getKnightMoves(row, col)}
-                            onMouseOut={outHandler(setState)}
+                            onMouseOut={() => outHandler(row, col)}
                             id={`cell-${row}-${col}`}
                             className={`cell ${isLight ? "light-square" : "dark-square"}`}>
                         </div>
