@@ -1,4 +1,4 @@
-import React, { useRef, useState,act } from "react";
+import React, { useRef, useState, act } from "react";
 import "../styles.css";
 
 function OTPInput({ onChangeOTP }) {
@@ -8,50 +8,49 @@ function OTPInput({ onChangeOTP }) {
 
 
     const focusInput = (index) => {
-        if(index>=0 && index<4)
+        if (index >= 0 && index < 4)
             inputsRef.current[index].focus();
     };
-
 
     const handleChange = (e, index) => {
         // TODO: Implement value validation, state update, auto-focus, and OTP completion check
         if (e.code !== "Backspace") {
             console.log("!!! handleChange called",)
-            let otpArr = otp
-            console.log(e.target.value)
-            if (e.target.value >= 0 && e.target.value <= 9) {
-                otpArr[index] =parseInt(e.target.value)
+            let otpArr = [...otp]
+            let intValue = parseInt(e.target.value);
+            if (intValue >= 0 && intValue <= 9 && typeof (intValue) === "number") {
+                otpArr[index] = intValue;
                 setOTP((prev) => [...otpArr]);
                 focusInput(index + 1)
             }
         }
     };
-    const handleKeyDown = async(e, index) => {
+    const handleKeyDown = async (e, index) => {
         if (e.code === "Backspace") {
             console.log("!!! handleKeyDown called", e)
-            if (e.target.value >=0 && e.target.value <=9) {
-                let arr = Array(length).fill("")
-                for (let i = 0; i < 4; i++){
-                    if (i !== index)
-                        arr[i] = otp[i]
-                }
-                setOTP((prev) => arr);
-                console.log("!!! otpArr", arr)
-                console.log("!!! otp", otp)
+            let arr = Array(length).fill("")
+            for (let i = 0; i < 4; i++) {
+                if (i !== index)
+                    arr[i] = otp[i]
             }
+            await setOTP((prev) => [...arr]);
         }
+        if (otp[index] === "")
+            focusInput(index - 1);
+
     };
 
 
     const handlePaste = (e) => {
         console.log(e)
-        // let tempArr = e.split("")
-        console.log("e",e)
+        let tempArr = e.clipboardData.getData("text").split("")
         let arr = Array(length);
-        for (let i = 0; i < 4; i++){
-            arr[i]=parseInt(tempArr)
+        for (let i = 0; i < 4; i++) {
+            let intValue = parseInt(tempArr[i]);
+            if (intValue >= 0 && intValue <= 9 && typeof (intValue) === "number")
+                arr[i]=tempArr[i]
         }
-        setOTP(arr)
+        setOTP([...arr])
     };
 
     // Render the OTP input fields
