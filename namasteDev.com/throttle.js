@@ -7,12 +7,13 @@
  * @return {Function} Returns the new throttled function
  */
 function throttle(func, delay) {
-  let timer;
+  let lastTime=0;
   return function (...args) {
-    // clearTimeout(timer);
-    timer = setTimeout(() => {
+    let now = Date.now();
+    if (now - lastTime >= delay) {
       func.apply(this, args);
-    }, delay);
+      lastTime = now;
+    }
   }
 }
 const throttledFn = throttle(() => console.log('Function called!'), 1000);
