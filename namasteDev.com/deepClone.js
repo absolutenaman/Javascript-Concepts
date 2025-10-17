@@ -1,34 +1,40 @@
 function deepClone(obj) {
-    if (typeof (obj) !== "object" || obj===null) {
+    let ans;
+    if (typeof obj === "object" && !Array.isArray(obj))
+        ans = {}
+    else
+        ans = []
+    if (typeof obj !== "object" || obj===null)
         return obj;
-    }
-
-    if (Array.isArray(obj)) {
-        let result = [];
-        for (let i = 0; i < obj.length; i++) {
-            if (typeof (obj[i]) !== "object")
-                result[i] = obj[i];
-            else
-                result[i] = deepClone(obj[i]);
-
+    if(Array.isArray(obj)){
+        for(let i=0;i<obj.length;i++){
+            if(typeof obj[i]!=="object"){
+                ans[i]=obj[i]
+            } else {
+                ans[i]=deepClone(obj[i])
+            }
         }
-        return result
-    }
-    let result = {}
-    for (const value in obj) {
-        if (typeof (obj[value]) === "object") {
-            result[value] = deepClone(obj[value]);
-        }
-        else {
-            result[value] = obj[value];
+    } else
+    for (const key in obj) {
+        if (typeof obj[key] !== "object" || obj[key] === undefined) {
+            ans[key] = obj[key]
+        } else {
+            if (Array.isArray(obj[key])) {
+                ans[key] = obj[key]
+            } else {
+                ans[key] = deepClone(obj[key])
+            }
         }
     }
-    return result;
+    return ans;
 }
 
 
-// console.log(deepClone([1, [2, 3], { "a": 4 }]));
-console.log(deepClone(23));
-
+//For the purpose of user debugging.
+// console.log({a: 1, b: [2, 4], c: {a: 34}})
+// console.log(deepClone({a: {b: {c: 3}}}));
+// console.log(deepClone({"a": 1, "b": 2}));
+console.log(deepClone([{"a":1,"b": 2},{"c":[2,34],"d":21}]));
+console.log(deepClone(null));
 
 module.exports = deepClone;
