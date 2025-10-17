@@ -1,35 +1,67 @@
+const promise1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("resolved 1 after 1 seconds")
+    }, 1000)
+})
 const promise2 = new Promise((resolve, reject) => {
-  setTimeout(() => resolve("✅ Promise 2 succeeded"), 2000);
-});
+    setTimeout(() => {
+        resolve("resolved 2 after 2 seconds")
+    }, 2000)
+})
+// promise1.then((res)=>{
+//     console.log(res)
+// }).catch((err)=>{
+//     console.log(err)
+// }).finally(()=>{
+//     console.log("Promise 1 executed successfully")
+// })
+// promise2.then((res)=>{
+//     console.log(res)
+// }).catch((err)=>{
+//     console.log(err)
+// }).finally(()=>{
+//     console.log("Promise 2 executed successfully")
+// })
+// Promise.all([promise1, promise2]).then((res) => {
+//     console.log(res)
+// }).catch((err) => {
+//     console.log(err)
+// })
 
-const promise3 = new Promise((resolve, reject) => {
-  setTimeout(() => resolve("✅ Promise 3 succeeded"), 3000);
-});
+Promise.myAll = function (promisesArr) {
+    return new Promise(async (resolve, reject) => {
+        let arr = []
+        for (let i = 0; i < promisesArr.length; i++) {
+            promisesArr[i].then((res) => {
+                if (i === promisesArr.length - 1) {
+                    arr.push(res);
+                    resolve(arr)
+                    return
+                }
+                arr.push(res)
+            }).catch((err) => {
+                reject(err)
+            })
+        }
 
-Promise.myAll = function (promiseArr) {
-  let arr = [];
-  let length=0
-  return new Promise((resolve, reject) => {
-    if (promiseArr.length === 0) return resolve([]);
-    promiseArr.forEach((promise,index) => {
-      Promise.resolve(promise)
-        .then((item) => {
-          arr[index]=item;
-          length++;
-          if (length === promiseArr.length) resolve(arr);
-        })
-        .catch((err) => {
-            arr[index]=err;
-          return reject(err);
-        });
-    });
-  });
-};
+        //  promisesArr.forEach((item) => {
+        //     item.then((res) => {
+        //         arr.push(res)
+        //     }).catch((err) => {
+        //         reject(err)
+        //     })
+        // })
+    })
 
-Promise.myAll([promise2, promise3])
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+}
+Promise.myAll([promise1, promise2]).then((res) => {
+    console.log("resolved with", res)
+}).catch((err) => {
+    console.log("rejected with", err)
+})
+
+Promise.all([promise1, promise2]).then((res) => {
+    console.log("resolved with", res)
+}).catch((err) => {
+    console.log("rejected with", err)
+})

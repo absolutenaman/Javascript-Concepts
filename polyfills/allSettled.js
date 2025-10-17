@@ -10,27 +10,27 @@ const promise3 = new Promise((resolve, reject) => {
   setTimeout(() => resolve("✅ Promise 3 succeeded"), 3000);
 });
 
-Promise.myAllSettled = function (promisesArray) {
-  let ans = [];
-  return new Promise((resolve, reject) => {
-    promisesArray.forEach((element,index) => {
-      Promise.resolve(element)
-        .then((value) => {
-          ans[index]={status:'fulfilled',value}
-          if (ans.length === promisesArray.length) resolve(ans);
-        })
-        .catch((err) => {
-           ans[index]={status:'rejected',err};
-          if (ans.length === promisesArray.length) resolve(ans);
-        });
-    });
-  });
-};
+Promise.myAllSettled=function (promiseArr){
+    return new Promise((resolve, reject)=>{
+        let arr=[]
+        for (let i = 0; i <promiseArr.length ; i++) {
+            promiseArr[i].then((res)=>{
+                arr.push(res);
+                if(i===promiseArr.length-1){
+                    resolve(arr)
+                }
+            }).catch(()=>{
 
-Promise.myAllSettled([promise1, promise2, promise3])
-  .then((val) => {
-    console.log(val);
-  })
-  .catch((val) => {
-    console.log(val);
-  });
+            })
+        }
+    })
+}
+
+Promise.myAllSettled([promise1,promise2,promise3]).then((res)=>{
+    console.log("resolved with",res)
+})
+Promise.allSettled([promise1,promise2,promise3]).then((res)=>{
+    console.log("resolved with",res)
+}).catch((err)=>{
+    console.log("rejected with",err)
+})
