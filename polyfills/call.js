@@ -1,19 +1,23 @@
-function foo(age) {
-  console.log(`${this.name}'s age is ${age}`);
+Function.prototype.myCall = function (obj = {}, ...args) {
+    obj.fn = this
+    obj.fn(...args)
+    delete obj.fn;
 }
 
-var p1 = {
-  name: "Rajat",
-};
-var p2={
-    name:"Naman"
+let name = "Rhea"
+
+function print(material) {
+    console.log("Hi ", this.name, material)
+}
+
+let obj1 = {
+    name: "naman",
+    age: 23
+}
+let obj2 = {
+    name: "kanak",
+    age: 23
 }
 
 
-Function.prototype.myCall=function(context,...args){
-    context.currFunction=this;
-    context.currFunction(...args)
-}
-
-foo.myCall(p1, 18);
-foo.myCall(p2, 18);
+print.myCall(obj1, "coal")
