@@ -1,3 +1,4 @@
+// return (...args2)=>obj.fn(...args1,...args2)
 const obj1 = {
     name: "Naman",
     age: 22
@@ -7,18 +8,17 @@ const obj2 = {
     age: 23
 }
 
-function print(material,animal) {
-    console.log("Hello", this.name, material,animal)
+function print(material, animal) {
+    console.log("Hello", this.name, material, animal)
 }
 
 Function.prototype.myBind = function (obj = {}, ...args) {
-    if(typeof this!=="function")
-    {
+    if (typeof this !== "function") {
         throw new Error("Invalid type of this")
     }
     obj.fn = this;
 
-    return (...args2) => obj.fn(...args,...args2)
+    return (...args2) => obj.fn(...args, ...args2)
 }
 const bindFunction = print.bind(obj1, "Solo-levelling")
 bindFunction("cat");

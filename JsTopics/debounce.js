@@ -1,19 +1,22 @@
+function debounce(fn, delay) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn(...args)
+        }, delay)
+    }
+}
 
-function debounce(func, delay) {
-  let timeoutId;
-  return function (...args) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      func.apply(this, args);
-    }, delay);
-    // console.log(timeoutId);
-  };
+function loggingData(name) {
+    console.log("Hello",name);
 }
-function loggingData(){
-  console.log("Hello");
-}
-const debouncedButtonClick=debounce(loggingData,300);
-debouncedButtonClick(loggingData);
-debouncedButtonClick(loggingData);
-debouncedButtonClick(loggingData);
-debouncedButtonClick(loggingData);
+
+const debouncedButtonClick = debounce(loggingData, 300);
+setTimeout(() => {
+    debouncedButtonClick("naman");
+}, 300)
+setTimeout(() => {
+    debouncedButtonClick("Kanak");
+}, 650)
+debouncedButtonClick();

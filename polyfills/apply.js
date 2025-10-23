@@ -1,3 +1,4 @@
+//obj.fn(...args),args=[]
 const obj1 = {
     name: "Naman",
     age: 23,
