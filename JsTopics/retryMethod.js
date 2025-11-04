@@ -1,14 +1,29 @@
 let a = 1;
-retry(asyncFunc, maxRetries, delayMs);
-const asyncFunc=()=>{
-  return new Promise((resolve,reject)=>{
-    if(a<2){
-      
-    }
-  })
+const asyncFunc = () => {
+  console.log("Async fun called");
+};
+
+function retry(asyncFunc, maxRetries, delayMs) {
+  let count = 0;
+  const funCall = () =>{
+  return new Promise((resolve, reject) => {
+      if (a > 2) {
+        resolve("Resolved promise successfully");
+      } else {
+        reject("Promise resolved ", count);
+        if(count<maxRetries){
+          count++;
+          setTimeout(()=>{
+          funCall()
+          },delayMs)
+        }
+      }
+    });
+  }
+    funCall().then((res)=>{
+      console.log("res",res);
+    }).catch((err)=>{
+      console.log("err",err);
+    })
 }
-function retry(asyncFunc,maxRetries,delayMs) {
-  const funCall=()=> new Promise((resolve,reject)=>{
-    
-  })
-}
+retry(asyncFunc, 3, 2000);
