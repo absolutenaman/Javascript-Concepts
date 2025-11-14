@@ -1,25 +1,18 @@
-//obj.fn(...args)
+Function.prototype.myCall = function (context, ...args) {
+    // If context is null or undefined, default to global object (window / globalThis)
+    context = context || globalThis;
 
-Function.prototype.myCall = function (obj = {}, ...args) {
-    obj.fn = this
-    obj.fn(...args)
-    delete obj.fn;
-}
+    // Create a unique property on the context
+    const fnSymbol = Symbol();
 
-let name = "Rhea"
+    // Assign the function (this) to that property
+    context[fnSymbol] = this;
 
-function print(material) {
-    console.log("Hi ", this.name, material)
-}
+    // Use apply to invoke the function with provided args
+    const result = context[fnSymbol].apply(context, args);
 
-let obj1 = {
-    name: "naman",
-    age: 23
-}
-let obj2 = {
-    name: "kanak",
-    age: 23
-}
+    // Clean up the temporary property
+    delete context[fnSymbol];
 
-
-print.myCall(obj1, "coal")
+    return result;
+};
