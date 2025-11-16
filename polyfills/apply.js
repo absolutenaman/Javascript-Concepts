@@ -1,25 +1,18 @@
-//obj.fn(...args),args=[]
-const obj1 = {
-    name: "Naman",
-    age: 23,
-}
-const obj2 = {
-    name: "Kanak",
-    age: 24
-}
-
-function print(material,tusk) {
-    console.log("Hello", this.name, material,tusk)
-}
-
-Function.prototype.myApply = function (obj = {},args=[]) {
-    obj.fn = this;
-    if(!Array.isArray(args))
-    {
-        throw new Error("Invalid type of argument")
+const obj={
+    name:"Naman",
+    print:function(city,country){
+        console.log(`Hello ${this.name} from ${city} in ${country}`);
     }
-    obj.fn(...args)
-    delete obj.fn
 }
-print.myApply(obj1, ["mangoes","elephant"])
-print.apply(obj1, ["mangoes","elephant"])
+Function.prototype.myApply=function(context,args){
+    if(!context)
+        context=globalThis;
+    if(!Array.isArray(args)){
+        throw new Error("invalid call")
+    }
+    return this.call(context,...args);// imp
+}
+const obj2={
+    name:"Aadarsh"
+}
+obj.print.myApply(obj2,["Lucknow","India"])
